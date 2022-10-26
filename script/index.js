@@ -30,19 +30,29 @@ function handleFormAddCat(e){
     const dataFromForm = serializeForm(elementsFormCat)
 
     console.log(dataFromForm);
+    api.addNewCat(dataFromForm)
+        .then(()=>{
+            const cardInstance = new Card(dataFromForm, '#card-template');
+            const newCardElement = cardInstance.getElement();
+            cardsContainer.append(newCardElement);
+        
+            popupAddCat.close();
+        })
+    
 
-    const cardInstance = new Card(dataFromForm, '#card-template');
-    const newCardElement = cardInstance.getElement();
-    cardsContainer.append(newCardElement);
-
-    popupAddCat.close();
+    
 }
 
-cats.forEach(function(catData){
-    const cardInstance = new Card(catData, '#card-template');
-    const newCardElement = cardInstance.getElement();
-    cardsContainer.append(newCardElement);
-})
+api.getAllCats()
+    .then(({ data })=> {
+        data.forEach(function(catData){
+            const cardInstance = new Card(catData, '#card-template');
+            const newCardElement = cardInstance.getElement();
+            cardsContainer.append(newCardElement);
+        })
+    })
+
+
 
 btnOpenPopupForm.addEventListener('click', () => popupAddCat.open())
 formCatAdd.addEventListener('submit', handleFormAddCat)
